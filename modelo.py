@@ -24,24 +24,27 @@ def interes_total(monto,tasa,cuotas):
 
 
 def amortizacion(monto, tasa, cuotas):
-    valor_cuota = round(cuota_mensual(monto, tasa, cuotas), 2)
+    valor_cuota = cuota_mensual(monto, tasa, cuotas)
     print(valor_cuota)
     saldo = monto
+    interes_total=tasa/100
     tabla_amortizacion = [["Cuota", "Saldo", "Pago interés", "Abono capital"], ["#", valor_cuota, tasa, monto]]
     if cuotas == 1:
         numero_cuota = 1
-        interes = round((tasa * saldo) / 100, 2)
-        abono_capital = round(valor_cuota - interes, 2)
-        fila = [numero_cuota, saldo, interes, abono_capital]
+        interes_total = 0
+        abono_capital = round(valor_cuota - interes_total, 2)
+        fila = [numero_cuota, saldo, interes_total, abono_capital]
         tabla_amortizacion.append(fila)
     else:
         for cuota in range(1, cuotas + 1):
             numero_cuota = cuota
-            interes = round((tasa * saldo) / 100, 2)
-            abono_capital = round(valor_cuota - interes, 2)
-            saldo = round(saldo - abono_capital, 2)
+            interes = round(interes_total * saldo, 2)
+            abono_capital = round(valor_cuota - interes,2)
+            saldo = round(saldo - abono_capital,2)
 
             fila = [numero_cuota, saldo, interes, abono_capital]
+            if fila[1] < 0:
+                fila[1] = 0
             tabla_amortizacion.append(fila)
             print(fila)
 
