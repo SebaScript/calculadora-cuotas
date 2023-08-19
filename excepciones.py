@@ -8,3 +8,11 @@ class Usura(Exception):
 
 class CuotaNegativa(Exception):
     pass
+
+
+class AbonoMuyBajo(Exception):
+    pass
+
+
+class AbonoMuyAlto(Exception):
+    pass
