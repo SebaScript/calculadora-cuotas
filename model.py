@@ -39,58 +39,66 @@ class CalcPayment:
         else:
             for payment in range(1, self.number_of_payments + 1):
                 payment_number = payment
-                interest: float = round(self.interest_percentage * balance,2)
-                capital_payment: float = round(payment_value - self.interest_percentage,2)
-                balance: float = round(balance - capital_payment,2)
+                interest: float = round(self.interest_percentage * balance, 2)
+                capital_payment: float = round(payment_value - interest, 2)
+                balance: float = round(balance - capital_payment, 2)
                 if balance < 0 > -0.1:
                     balance = 0
                 row: list = [payment_number, balance, interest, capital_payment]
                 amortization_table.append(row)
     
         return amortization_table
-    
-    def calc_extra_payment(self, extra_payment: float, installment_of_extra_payment: int) -> list:
+
+    def calc_extra_payment(self, extra_payment, period) -> list:
+        balance: float = 0
+
         payment_value: float = round(self.calc_monthly_payment(), 2)
         amortization_table: list = self.amortization()
 
         if extra_payment < payment_value:
             raise exceptions.InsufficientPayment
-    
-        balance = amortization_table[installment_of_extra_payment-2][1]
-    
-        if extra_payment > balance:
+
+        if extra_payment > amortization_table[period-1][1]:
             raise exceptions.GreaterPayment
-    
+
         extra_payment_amortization_table: list = []
-    
-        for installment in amortization_table:
-            extra_payment_amortization_table.append(installment)
+        for payment in amortization_table:
+            if payment[0] < period:
+                payment_number = payment[0]
+                interest: float = payment[2]
+                capital_payment: float = payment[3]
+                balance = payment[1]
 
-            if installment[0] == installment_of_extra_payment - 1:
-                break
-    
-        for installment in range(amortization_table[installment_of_extra_payment-1][0], amortization_table[-1][0]):
-            payment_number = installment
-            interest: float = round(self.interest_percentage * balance, 2)
+                row: list = [payment_number, balance, interest, capital_payment]
+                extra_payment_amortization_table.append(row)
 
-            if installment_of_extra_payment == amortization_table[installment_of_extra_payment - 1][0]:
+            elif payment[0] == period:
+                payment_number = payment[0]
+                interest: float = round(self.interest_percentage * balance, 2)
                 capital_payment: float = round(extra_payment - interest, 2)
+                balance: float = round(balance - capital_payment, 2)
+                row: list = [payment_number, balance, interest, capital_payment]
+                extra_payment_amortization_table.append(row)
+
             else:
+                payment_number = payment[0]
+                interest: float = round(self.interest_percentage * balance, 2)
                 capital_payment: float = round(payment_value - interest, 2)
-            balance = round(balance - capital_payment, 2)
+                balance: float = round(balance - capital_payment, 2)
+                if balance < 0 > -0.1:
+                    balance = 0
+                row: list = [payment_number, balance, interest, capital_payment]
+                extra_payment_amortization_table.append(row)
 
-            if balance == 0:
-                capital_payment = extra_payment_amortization_table[-1][1]
-
-            if balance <= 0:
-                balance = 0
-
-            row: list = [payment_number, balance, interest, capital_payment]
-            extra_payment_amortization_table.append(row)
-
-            if balance <= 0:
-                break
+                if balance <= 0:
+                    break
 
         if extra_payment_amortization_table[-2][1] < extra_payment_amortization_table[-2][3]:
             extra_payment_amortization_table[-1][3] = extra_payment_amortization_table[-2][1]
+
         return extra_payment_amortization_table
+
+
+calc = CalcPayment(200000, 3.10, 36)
+print(calc.calc_extra_payment(53000, 10))
+print(calc.calc_monthly_payment())
