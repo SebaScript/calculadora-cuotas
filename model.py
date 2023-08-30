@@ -97,8 +97,3 @@ class CalcPayment:
             extra_payment_amortization_table[-1][3] = extra_payment_amortization_table[-2][1]
 
         return extra_payment_amortization_table
-
-
-calc = CalcPayment(200000, 3.10, 36)
-print(calc.calc_extra_payment(53000, 10))
-print(calc.calc_monthly_payment())
