@@ -1,7 +1,7 @@
-from model import CalcPayment
+from calc_payment_model import CalcPayment
 
 
-class Menu:
+class CalcPaymentMenu:
     print("Sistema de calculo de cuotas y amortizacion para compras a crédito.\n")
     print("Por favor, ingrese los valores para calcular el valor de la cuota, "
           "los intereses totales a pagar y el plan de amortización.\n")

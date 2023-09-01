@@ -1,4 +1,4 @@
-import exceptions
+import calc_payment_exceptions
 
 
 class CalcPayment:
@@ -7,15 +7,15 @@ class CalcPayment:
         self.amount: float = amount
         self.interest_rate: float = interest_rate
         self.number_of_payments: int = number_of_payments
-        self.interest_percentage: float = self.interest_rate/100
+        self.interest_percentage: float = self.interest_rate / 100
 
     def calc_monthly_payment(self) -> float:
         if self.amount == 0:
-            raise exceptions.ZeroAmount
+            raise calc_payment_exceptions.ZeroAmount
         elif self.interest_rate * 12 > 100:
-            raise exceptions.Usury
+            raise calc_payment_exceptions.Usury
         elif self.number_of_payments <= 0:
-            raise exceptions.NegativeNumberOfFees
+            raise calc_payment_exceptions.NegativeNumberOfFees
         elif self.number_of_payments == 1:
             return self.amount
         elif self.interest_rate == 0:
@@ -56,10 +56,10 @@ class CalcPayment:
         amortization_table: list = self.amortization()
 
         if extra_payment < payment_value:
-            raise exceptions.InsufficientPayment
+            raise calc_payment_exceptions.InsufficientPayment
 
         if extra_payment > amortization_table[period-1][1]:
-            raise exceptions.GreaterPayment
+            raise calc_payment_exceptions.GreaterPayment
 
         extra_payment_amortization_table: list = []
         for payment in amortization_table:
